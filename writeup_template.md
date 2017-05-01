@@ -53,6 +53,10 @@ The model was now able to drive to the first curve and some behavior was visible
 * To make the curves its visible that the model doesn't have enough curve/recovery examples in order to generalize. I moved to record new data just in recovery or curve situations.
 
 * Added Drive4 and Drive5 folders. With recovery situations. Still applying to LeNet5.
+_lenet5_1.h5_ is the trained LeNet model with Drive1,2,3 data directories and dropout of 40% on the fully connected layers. 10 epochs, looks good. Training looks good but it's not general enough. It fails some curves.
+
+_lenet5_2.h5_ is the trained LeNet model with Drive1,2,3,4,5 data directories and dropout of 40% on the fully connected layers. 10 epochs, it overfits the data.
+
 
 
 

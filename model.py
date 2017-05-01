@@ -2,6 +2,8 @@ import numpy as np
 import csv
 import os
 import cv2
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
@@ -105,9 +107,10 @@ def define_model(in_shape = (160,320,3)):
     '''
         Defines model and optimizer.
     '''
-
-    model = LeNet(in_shape = (160,320,3))
+    
     #model = testNet(in_shape = (160,320,3))
+    #model = LeNet(in_shape = (160,320,3))
+    model = nvidia(in_shape = (160,320,3))
 
     #setup optimizer and loss function to be used
     model.compile(loss="mse", optimizer="adam")
@@ -139,6 +142,30 @@ def LeNet(in_shape = (160,320,3)):
     model.add(Dense(120))
     model.add(Dropout(0.4))
     model.add(Dense(84))
+    model.add(Dense(1))
+
+    return model
+
+def nvidia(in_shape = (160,320,3)):
+    '''
+        Replicate nvidia network with keras
+    '''
+    model = Sequential()
+    model.add(Lambda(lambda x:x/255.0 - 0.5, input_shape=in_shape)) #normalize and center
+    model.add(Cropping2D( cropping=((65, 25), (0, 0)) ))
+    model.add(Convolution2D(24,5,5, activation='relu', subsample=(2,2)))
+    model.add(Convolution2D(36,5,5, activation='relu', subsample=(2,2)))
+    model.add(Convolution2D(48,5,5, activation='relu', subsample=(2,2)))
+    model.add(Convolution2D(64,3,3, activation='relu', subsample=(1,1)))
+    model.add(Convolution2D(64,3,3, activation='relu', subsample=(1,1)))
+    model.add(Flatten())
+    model.add(Dropout(0.4))
+    model.add(Dense(1164))
+    model.add(Dropout(0.4))
+    model.add(Dense(100))
+    model.add(Dropout(0.4))
+    model.add(Dense(50))
+    model.add(Dense(10))
     model.add(Dense(1))
 
     return model
@@ -186,10 +213,12 @@ if __name__ == "__main__":
 
     #From Jason Brownlee http://machinelearningmastery.com
     # summarize history for loss
+
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
+    plt.savefig('loss.svg',bbox_inches="tight" )
+    plt.savefig('loss.png',bbox_inches="tight" )
