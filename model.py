@@ -107,7 +107,7 @@ def define_model(in_shape = (160,320,3)):
     '''
         Defines model and optimizer.
     '''
-    
+
     #model = testNet(in_shape = (160,320,3))
     #model = LeNet(in_shape = (160,320,3))
     model = nvidia(in_shape = (160,320,3))
@@ -159,11 +159,11 @@ def nvidia(in_shape = (160,320,3)):
     model.add(Convolution2D(64,3,3, activation='relu', subsample=(1,1)))
     model.add(Convolution2D(64,3,3, activation='relu', subsample=(1,1)))
     model.add(Flatten())
-    model.add(Dropout(0.4))
+    model.add(Dropout(0.5))
     model.add(Dense(1164))
-    model.add(Dropout(0.4))
+    model.add(Dropout(0.5))
     model.add(Dense(100))
-    model.add(Dropout(0.4))
+    model.add(Dropout(0.5))
     model.add(Dense(50))
     model.add(Dense(10))
     model.add(Dense(1))
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     model = define_model()
 
     print('Training...')
-    history = train(model, csvlist, epochs=10)
+    history = train(model, csvlist, epochs=7)
 
     #From Jason Brownlee http://machinelearningmastery.com
     # summarize history for loss

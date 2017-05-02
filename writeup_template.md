@@ -58,6 +58,10 @@ _lenet5_1.h5_ is the trained LeNet model with Drive1,2,3 data directories and dr
 _lenet5_2.h5_ is the trained LeNet model with Drive1,2,3,4,5 data directories and dropout of 40% on the fully connected layers. 10 epochs, it overfits the data.
 
 
+#####2) NVIDIA network
+* _nvidia_1.h5_ is the trained nvidia model with Drive1,2,3,4,5 data directories and dropout of 40% on the fully connected layers. 10 epochs, it overfits the data.
+
+* _nvidia_2.h5_ is the trained nvidia model with Drive1,2,3,4,5,6,7,8 data directories and dropout of 40% on the fully connected layers. 6 epochs. Drive6 introduces cases for the dirt road on track 1 and Drive 7 and 8 the second track.
 
 
 
