@@ -47,7 +47,7 @@ def load_data_paths(datafolder = '../data', blacklist=None):
             contents = csv.reader(csv_fid)
             i = 0
             for l in contents:
-                if not angles[i] == 0.0:
+                if True or not angles[i] == 0.0:
                     for n in range(3):
                         l[n] = os.path.join(datafolder, f, "IMG", l[n].split('/')[-1])
                     l[3]=angles[i]
@@ -239,7 +239,7 @@ def train(model, csvlist, epochs=10, modelfilename="model.h5"):
     #define callbacks to save best model and end training early
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=1, verbose=0),
-        ModelCheckpoint(modelfilename, monitor='val_loss', save_best_only=True, verbose=0),
+        ModelCheckpoint("model_{epoch:02d}_{val_loss:.2f}.h5", monitor='val_loss', save_best_only=False, verbose=0),
     ]
 
     if useGenerators:
