@@ -33,6 +33,9 @@ class SimplePIController:
     def set_desired(self, desired):
         self.set_point = desired
 
+    def reset(self):
+         self.__init__(self.Kp, self.Ki)
+
     def update(self, measurement):
         # proportional error
         self.error = self.set_point - measurement
@@ -40,11 +43,13 @@ class SimplePIController:
         # integral error
         self.integral += self.error
 
-        return self.Kp * self.error + self.Ki * self.integral
+        cmd = self.Kp * self.error + self.Ki * self.integral
+        
+        return cmd
 
 
 controller = SimplePIController(0.1, 0.002)
-set_speed = 10
+set_speed = 9
 controller.set_desired(set_speed)
 
 
@@ -80,6 +85,8 @@ def telemetry(sid, data):
 
 @sio.on('connect')
 def connect(sid, environ):
+    controller.reset()
+    controller.set_desired(set_speed)
     print("connect ", sid)
     send_control(0, 0)
 

@@ -1,4 +1,4 @@
-#**Behavioral Cloning** 
+#**Behavioral Cloning**
 
 [//]: # (Image References)
 
@@ -15,13 +15,13 @@
 
 ####1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24)
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18).
 
 ####2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers in order to reduce overfitting (model.py lines 21).
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
@@ -31,9 +31,9 @@ The model used an adam optimizer, so the learning rate was not tuned manually (m
 
 ####4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ...
 
-For details about how I created the training data, see the next section. 
+For details about how I created the training data, see the next section.
 
 ###Model Architecture and Training Strategy
 
@@ -46,7 +46,7 @@ For details about how I created the training data, see the next section.
 * Cropped images as suggested
 * Hardly any response from the vehicle, it would just go straight.
 
-* I found out that this is probably because most of the steering angles recorded with keyboard control are 0 degrees. 
+* I found out that this is probably because most of the steering angles recorded with keyboard control are 0 degrees.
 I moved to record my laps with mouse input which improved significantly the result.
 The model was now able to drive to the first curve and some behavior was visible.
 
@@ -97,6 +97,51 @@ Etc ....
 After the collection process, I had X number of data points. I then preprocessed this data by ...
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+I finally randomly shuffled the data set and put Y% of the data into a validation set.
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+
+
+
+
+
+
+Epoch 1/20
+31285/31285 [==============================] - 647s - loss: 0.1471 - val_loss: 0.0913
+Epoch 2/20
+31285/31285 [==============================] - 778s - loss: 0.0900 - val_loss: 0.0902
+Epoch 3/20
+31285/31285 [==============================] - 771s - loss: 0.0867 - val_loss: 0.0838
+Epoch 4/20
+31285/31285 [==============================] - 772s - loss: 0.0819 - val_loss: 0.0809
+Epoch 5/20
+31285/31285 [==============================] - 660s - loss: 0.0789 - val_loss: 0.0767
+Epoch 6/20
+31285/31285 [==============================] - 717s - loss: 0.0763 - val_loss: 0.0753
+Epoch 7/20
+31285/31285 [==============================] - 659s - loss: 0.0746 - val_loss: 0.0728
+Epoch 8/20
+31285/31285 [==============================] - 643s - loss: 0.0726 - val_loss: 0.0707
+Epoch 9/20
+31285/31285 [==============================] - 687s - loss: 0.0700 - val_loss: 0.0695
+Epoch 10/20
+31285/31285 [==============================] - 638s - loss: 0.0680 - val_loss: 0.0699
+Epoch 11/20
+31285/31285 [==============================] - 637s - loss: 0.0665 - val_loss: 0.0682
+Epoch 12/20
+31285/31285 [==============================] - 637s - loss: 0.0657 - val_loss: 0.0676
+Epoch 13/20
+31285/31285 [==============================] - 641s - loss: 0.0640 - val_loss: 0.0659
+Epoch 14/20
+31285/31285 [==============================] - 645s - loss: 0.0610 - val_loss: 0.0660
+Epoch 15/20
+31285/31285 [==============================] - 645s - loss: 0.0598 - val_loss: 0.0643
+Epoch 16/20
+31285/31285 [==============================] - 647s - loss: 0.0575 - val_loss: 0.0630
+Epoch 17/20
+31285/31285 [==============================] - 661s - loss: 0.0556 - val_loss: 0.0626
+Epoch 18/20
+31285/31285 [==============================] - 659s - loss: 0.0554 - val_loss: 0.0630
+Epoch 19/20
+31285/31285 [==============================] - 659s - loss: 0.0544 - val_loss: 0.0668
