@@ -34,6 +34,12 @@ def load_data_paths(datafolder = '../data', blacklist=None):
         if blacklist:
             if f in blacklist:
                 continue
+
+        if f[-1] == "_":
+            addZeros=False
+        else:
+            addZeros=False
+
         with open(os.path.join(datafolder, f, "driving_log.csv")) as csv_fid:
             contents = csv.reader(csv_fid)
             for l in contents:
@@ -47,7 +53,7 @@ def load_data_paths(datafolder = '../data', blacklist=None):
             contents = csv.reader(csv_fid)
             i = 0
             for l in contents:
-                if True or not angles[i] == 0.0:
+                if addZeros or (not angles[i] == 0.0):
                     for n in range(3):
                         l[n] = os.path.join(datafolder, f, "IMG", l[n].split('/')[-1])
                     l[3]=angles[i]
@@ -217,11 +223,12 @@ def nvidia(in_shape = (160,320,3)):
     model.add(Convolution2D(64,3,3, activation='relu', subsample=(1,1)))
     model.add(Convolution2D(64,3,3, activation='relu', subsample=(1,1)))
     model.add(Flatten())
-    model.add(Dropout(.4))
     model.add(Dense(1164))
-    model.add(Dropout(.4))
+    model.add(Dropout(.5))
     model.add(Dense(100))
+    model.add(Dropout(.5))
     model.add(Dense(50))
+    model.add(Dropout(.5))
     model.add(Dense(10))
     model.add(Dense(1))
 
@@ -239,7 +246,7 @@ def train(model, csvlist, epochs=10, modelfilename="model.h5"):
     #define callbacks to save best model and end training early
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=1, verbose=0),
-        ModelCheckpoint("model_{epoch:02d}_{val_loss:.2f}.h5", monitor='val_loss', save_best_only=False, verbose=0),
+        ModelCheckpoint("model_{epoch:02d}.h5", monitor='val_loss', save_best_only=False, verbose=0),
     ]
 
     if useGenerators:
@@ -272,7 +279,7 @@ if __name__ == "__main__":
     model = define_model()
 
     print('Training...')
-    history = train(model, csvlist, epochs=20)
+    history = train(model, csvlist, epochs=6)
 
     #From Jason Brownlee http://machinelearningmastery.com
     # summarize history for loss
