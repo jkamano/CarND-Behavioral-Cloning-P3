@@ -2,37 +2,39 @@
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
-
+[image1]: ./examples/model.png "Model Visualization"
+[image2]: ./examples/T1.png "Track1"
+[image3]: ./examples/T1f.png "Track1"
+[image4]: ./examples/T2_1.png "Track2"
+[image5]: ./examples/T2_1d.png "Darker version"
+[image6]: ./examples/T2_2.png "Track2"
+[image7]: ./examples/T2_2l.png "Lighter version"
+[image8]: ./examples/loss.svg "Loss_vs_epoch1"
+[image9]: ./examples/loss_final.svg "Loss_vs_epoch3"
 
 ###Model Architecture and Training Strategy
 
 ####1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24)
+I started testing the LeNet5 model and then decided to do a replication of NVIDIA model described in https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/, it is defined in _nvidia()_ (line 213) and represented in the following picture:
+![alt text][image1]
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18).
 
 ####2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21).
+The model contains dropout layers in order to reduce overfitting (model.py lines 227, 229, 231).
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+Exaustive testing was done to make sure the model was able to drive around the track.
+Initially it was overfitting but by limiting the number of epochs to three the model is now driving well around the 1st track.
 
 ####3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 182).
+The probability of dropping was set to 0.5 adopting the values from last assignment for the traffic sign recognition. Apparently it works.
 
 ####4. Appropriate training data
 
 Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ...
-
 For details about how I created the training data, see the next section.
 
 ###Model Architecture and Training Strategy
@@ -52,126 +54,50 @@ The model was now able to drive to the first curve and some behavior was visible
 
 * To make the curves its visible that the model doesn't have enough curve/recovery examples in order to generalize. I moved to record new data just in recovery or curve situations.
 
-* Added Drive4 and Drive5 folders. With recovery situations. Still applying to LeNet5.
-_lenet5_1.h5_ is the trained LeNet model with Drive1,2,3 data directories and dropout of 40% on the fully connected layers. 10 epochs, looks good. Training looks good but it's not general enough. It fails some curves.
-
-_lenet5_2.h5_ is the trained LeNet model with Drive1,2,3,4,5 data directories and dropout of 40% on the fully connected layers. 10 epochs, it overfits the data.
-
+* Added recovery situations. Still applying to LeNet5.
+Still, LeNet5 network seems to be insuficient to model all possible situations and adapt to it. I moved to setup a new, more complex, model.
 
 #####2) NVIDIA network
-* _nvidia_1.h5_ is the trained nvidia model with Drive1,2,3,4,5 data directories and dropout of 40% on the fully connected layers. 10 epochs, it overfits the data.
+* Initialy nvidia model didn't perform too well. It had problems on the curve with dirt road, it would not see the dirt as a limit of the street and just continue straight.
+I included a few more recordings of dirt curves and augmented the dataset by including images with random light intensity.
 
-* _nvidia_2.h5_ is the trained nvidia model with Drive1,2,3,4,5,6,7,8 data directories and dropout of 40% on the fully connected layers. 6 epochs. Drive6 introduces cases for the dirt road on track 1 and Drive 7 and 8 the second track.
+* I also recorded laps from the second track, hopping this would help generalize the model to improve on track 1 but also eventually to drive track 2.
+Unfortunatelly the model I deliver  is only capable of driving track1.
+Track to is really dificult even for me to drive. It also has the challenge of speed control which is not quite managed by the PI control. In certain descends the car breaks and blocks, and altough I see my velocity setpoint increasing, the car never moves again. (maybe some bug on the simulator?)
 
+Nevertheless, all models I've achieved capable of driving on the 2nd track performed very poorly on track 1.
+To drive in track 2 I actually removed every example of the dataset with 
 
 
 ####2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
+The final model is the one used by nvidia. I managed to train it to drive track1 and track 2 fairly well (reached the bridge) unfortunatelly never both. Either the model performed well on track 1 or track 2. Never both. Is this an overfitting problem perhaps?
 
 ####3. Creation of the Training Set & Training Process
+* I recorded initialy 2 laps on track 1, one in normal sense and other in opposite sense.
+* Has most of the track is straight I recorded extra situations only in curves or recovering from line to the center of the lane. Also some specially on the dirt curve which seemed a problem from the model to detect.
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
+* Recorded track 2, (difficult without crashing), one lap normal sense and other opposite sense. Always in the left lane.
+As this track is so full of curves, didn't do any special "recovery" recording.
 
-![alt text][image2]
+* Augmented the data by adding random light intensity, adding left and right cameras and adding horizontally flipped images of the first track. (Not second in order to drive always on left lane).
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+This gave a total of 52485 features, randomly suffled and divided, 80% taken for train and 20% for validation.
 
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
+These are example images used:
 
-Then I repeated this process on track two in order to get more data points.
+* 1st row is from 1st track, acquired and flipped
+* 2nd row is 2nd track, acquired and preprocessed darker version
+* 3rd row is 2nd track, acquired and preprocessed lighter version 
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+![alt text][image2]  ![alt text][image3]
+![alt text][image4]  ![alt text][image5]
+![alt text][image6]  ![alt text][image7]
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set.
+The ideal number of epochs was 3 as evidenced by following pictures that show the loss over the epochs for training and testing set on two training experiments.
+This was also confirmed by saving the models on each epoch and testing the each on the track.
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
-
-
-
-
-
-
-#without 0 angles
-Epoch 1/20
-31285/31285 [==============================] - 647s - loss: 0.1471 - val_loss: 0.0913
-Epoch 2/20
-31285/31285 [==============================] - 778s - loss: 0.0900 - val_loss: 0.0902
-Epoch 3/20
-31285/31285 [==============================] - 771s - loss: 0.0867 - val_loss: 0.0838
-Epoch 4/20
-31285/31285 [==============================] - 772s - loss: 0.0819 - val_loss: 0.0809
-Epoch 5/20
-31285/31285 [==============================] - 660s - loss: 0.0789 - val_loss: 0.0767
-Epoch 6/20
-31285/31285 [==============================] - 717s - loss: 0.0763 - val_loss: 0.0753
-Epoch 7/20
-31285/31285 [==============================] - 659s - loss: 0.0746 - val_loss: 0.0728
-Epoch 8/20
-31285/31285 [==============================] - 643s - loss: 0.0726 - val_loss: 0.0707
-Epoch 9/20
-31285/31285 [==============================] - 687s - loss: 0.0700 - val_loss: 0.0695
-Epoch 10/20
-31285/31285 [==============================] - 638s - loss: 0.0680 - val_loss: 0.0699
-Epoch 11/20
-31285/31285 [==============================] - 637s - loss: 0.0665 - val_loss: 0.0682
-Epoch 12/20
-31285/31285 [==============================] - 637s - loss: 0.0657 - val_loss: 0.0676
-Epoch 13/20
-31285/31285 [==============================] - 641s - loss: 0.0640 - val_loss: 0.0659
-Epoch 14/20
-31285/31285 [==============================] - 645s - loss: 0.0610 - val_loss: 0.0660
-Epoch 15/20
-31285/31285 [==============================] - 645s - loss: 0.0598 - val_loss: 0.0643
-Epoch 16/20
-31285/31285 [==============================] - 647s - loss: 0.0575 - val_loss: 0.0630
-Epoch 17/20
-31285/31285 [==============================] - 661s - loss: 0.0556 - val_loss: 0.0626
-Epoch 18/20
-31285/31285 [==============================] - 659s - loss: 0.0554 - val_loss: 0.0630
-Epoch 19/20
-31285/31285 [==============================] - 659s - loss: 0.0544 - val_loss: 0.0668
-
-
-
-#trial with 0.0 angles included
-Epoch 1/20
-45595/45595 [==============================] - 972s - loss: 0.1120 - val_loss: 0.0780
-Epoch 2/20
-45595/45595 [==============================] - 1046s - loss: 0.0773 - val_loss: 0.0716
-Epoch 3/20
-45595/45595 [==============================] - 972s - loss: 0.0724 - val_loss: 0.0675
-Epoch 4/20
-45595/45595 [==============================] - 934s - loss: 0.0704 - val_loss: 0.0653
-Epoch 5/20
-45595/45595 [==============================] - 937s - loss: 0.0684 - val_loss: 0.0632
-Epoch 6/20
-45595/45595 [==============================] - 994s - loss: 0.0661 - val_loss: 0.0625
-Epoch 7/20
-45595/45595 [==============================] - 944s - loss: 0.0645 - val_loss: 0.0606
-Epoch 8/20
-45595/45595 [==============================] - 940s - loss: 0.0624 - val_loss: 0.0584
-Epoch 9/20
-45595/45595 [==============================] - 938s - loss: 0.0617 - val_loss: 0.0586
-Epoch 10/20
-45595/45595 [==============================] - 938s - loss: 0.0601 - val_loss: 0.0566
-Epoch 11/20
-45595/45595 [==============================] - 974s - loss: 0.0590 - val_loss: 0.0573
-Epoch 12/20
-45595/45595 [==============================] - 1103s - loss: 0.0580 - val_loss: 0.0568
-
-
+Second picture corresponds to the actual training of the model delivered.
+![alt text][image8] 
+![alt text][image9]
