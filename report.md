@@ -9,8 +9,8 @@
 [image5]: ./examples/T2_1d.png "Darker version"
 [image6]: ./examples/T2_2.png "Track2"
 [image7]: ./examples/T2_2l.png "Lighter version"
-[image8]: ./examples/loss.svg "Loss_vs_epoch1"
-[image9]: ./examples/loss_final.svg "Loss_vs_epoch3"
+[image8]: ./examples/loss.png "Loss_vs_epoch1"
+[image9]: ./examples/loss_final.png "Loss_vs_epoch3"
 
 ###Model Architecture and Training Strategy
 
@@ -66,7 +66,7 @@ Unfortunatelly the model I deliver  is only capable of driving track1.
 Track to is really dificult even for me to drive. It also has the challenge of speed control which is not quite managed by the PI control. In certain descends the car breaks and blocks, and altough I see my velocity setpoint increasing, the car never moves again. (maybe some bug on the simulator?)
 
 Nevertheless, all models I've achieved capable of driving on the 2nd track performed very poorly on track 1.
-To drive in track 2 I actually removed every example of the dataset with 
+To drive in track 2 I actually removed every example of the dataset with
 
 
 ####2. Final Model Architecture
@@ -88,7 +88,7 @@ These are example images used:
 
 * 1st row is from 1st track, acquired and flipped
 * 2nd row is 2nd track, acquired and preprocessed darker version
-* 3rd row is 2nd track, acquired and preprocessed lighter version 
+* 3rd row is 2nd track, acquired and preprocessed lighter version
 
 ![alt text][image2]  ![alt text][image3]
 ![alt text][image4]  ![alt text][image5]
@@ -99,5 +99,5 @@ The ideal number of epochs was 3 as evidenced by following pictures that show th
 This was also confirmed by saving the models on each epoch and testing the each on the track.
 
 Second picture corresponds to the actual training of the model delivered.
-![alt text][image8] 
+![alt text][image8]
 ![alt text][image9]
